@@ -16,8 +16,13 @@ package main
 
 import (
 	"hidevops.io/hiboot/pkg/app/web"
+	"hidevops.io/hiboot/pkg/app"
+	"hidevops.io/hiboot/pkg/starter/actuator"
+	"hidevops.io/hiboot/pkg/starter/logging"
 )
 
 func main()  {
-	web.NewApplication().Run()
+	web.NewApplication().
+		SetProperty(app.ProfilesInclude, actuator.Profile, logging.Profile).
+		Run()
 }
