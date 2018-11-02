@@ -12,9 +12,12 @@ See [Effective GO](https://golang.org/doc/effective_go.html#names) to learn more
 
 Here we are going to add starter [actuator](https://hidevops.io/hiboot/tree/master/pkg/starter/actuator) and [logging](https://hidevops.io/hiboot/tree/master/pkg/starter/logging).
 
+## Step 3, adding Hiboot controller
+
 ### Writing the code
 
 ```go
+
 package main
 
 import (
@@ -22,13 +25,30 @@ import (
 	"hidevops.io/hiboot/pkg/app"
 	"hidevops.io/hiboot/pkg/starter/actuator"
 	"hidevops.io/hiboot/pkg/starter/logging"
+	"hidevops.io/hiboot/pkg/at"
 )
 
+// Controller Rest Controller with path /
+// RESTful Controller, derived from web.Controller. The context mapping of this controller is '/' by default
+type Controller struct {
+	// at.RestController or web.Controller must be embedded here
+	at.RestController
+}
+
+// Get GET /
+// Get method, the context mapping of this method is '/' by default
+// the Method name Get means that the http request method is GET
+func (c *Controller) Get() string {
+	// response
+	return "My first Hiboot web application"
+}
+
 func main()  {
-	web.NewApplication().
+	web.NewApplication(new(Controller)).
 		SetProperty(app.ProfilesInclude, actuator.Profile, logging.Profile).
 		Run()
 }
+
 ```
 
 ### Run the web application
@@ -42,20 +62,25 @@ go run main.go
 The output will be,
 
 ```bash
-______  ____________             _____
 ___  / / /__(_)__  /_______________  /_
 __  /_/ /__  /__  __ \  __ \  __ \  __/
 _  __  / _  / _  /_/ / /_/ / /_/ / /_     Hiboot Application Framework
 /_/ /_/  /_/  /_.___/\____/\____/\__/     https://hidevops.io/hiboot
 
-[INFO] 2018/10/26 18:44 Starting Hiboot web application hiboot-app on localhost with PID 16703
-[INFO] 2018/10/26 18:44 Working directory: /Users/johnd/.gvm/pkgsets/go1.10/hidevops/src/hidevops.io/hiboot-web-app-demo
-[INFO] 2018/10/26 18:44 The following profiles are active: default, [actuator logging]
-[INFO] 2018/10/26 18:44 Auto configure actuator starter
-[INFO] 2018/10/26 18:44 Auto configure logging starter
-Now listening on: http://localhost:8080
-Application started. Press CMD+C to shut down.
-
+[INFO] 2018/11/03 07:47 Starting Hiboot web application hiboot-app on localhost with PID 4092
+[INFO] 2018/11/03 07:47 Working directory: /Users/johnd/.gvm/pkgsets/go1.10/hidevops/src/hidevops.io/hiboot-web-app-demo
+[INFO] 2018/11/03 07:47 The following profiles are active: local, [actuator logging web]
+[INFO] 2018/11/03 07:47 Initializing Hiboot Application
+[INFO] 2018/11/03 07:47 Auto configure web starter
+[INFO] 2018/11/03 07:47 Auto configure actuator starter
+[INFO] 2018/11/03 07:47 Auto configure logging starter
+[INFO] 2018/11/03 07:47 Resolving dependencies
+[INFO] 2018/11/03 07:47 Injecting dependencies
+[INFO] 2018/11/03 07:47 Injected dependencies
+[INFO] 2018/11/03 07:47 Mapped "/" onto main.Controller.Get()
+[INFO] 2018/11/03 07:47 Mapped "/health" onto actuator.healthController.Get()
+[INFO] 2018/11/03 07:47 Hiboot started on port(s) http://localhost:8080
+[INFO] 2018/11/03 07:47 Started hiboot-app in 0.003143 seconds
 ```
 
 As you can see above, the starter actuator and logging is auto configured.

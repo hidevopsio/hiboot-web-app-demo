@@ -19,10 +19,26 @@ import (
 	"hidevops.io/hiboot/pkg/app"
 	"hidevops.io/hiboot/pkg/starter/actuator"
 	"hidevops.io/hiboot/pkg/starter/logging"
+	"hidevops.io/hiboot/pkg/at"
 )
 
+// Controller Rest Controller with path /
+// RESTful Controller, derived from web.Controller. The context mapping of this controller is '/' by default
+type Controller struct {
+	// at.RestController or web.Controller must be embedded here
+	at.RestController
+}
+
+// Get GET /
+// Get method, the context mapping of this method is '/' by default
+// the Method name Get means that the http request method is GET
+func (c *Controller) Get() string {
+	// response
+	return "My first Hiboot web application"
+}
+
 func main()  {
-	web.NewApplication().
+	web.NewApplication(new(Controller)).
 		SetProperty(app.ProfilesInclude, actuator.Profile, logging.Profile).
 		Run()
 }
